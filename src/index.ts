@@ -2,51 +2,52 @@ import * as p5 from 'p5';
 
 import { Engine, World, Bodies, Body } from 'matter-js';
 
+import Player from './Player';
+import Obstacle from './Obstacle';
+
 let sketch = function (p: p5) {
     // create an engine
     let engine: Matter.Engine;
-    var boxA: Matter.Body;
-    var boxB: Matter.Body;
     var ground: Matter.Body;
+    let player: Player;
+    let obstacles: Obstacle[];
 
     p.setup = function () {
         p.createCanvas(700, 410);
 
         engine = Engine.create();
-        // create two boxes and a ground
-        boxA = Bodies.rectangle(400, 200, 80, 80);
-        boxB = Bodies.rectangle(450, 50, 80, 80);
         ground = Bodies.rectangle(400, 410, 810, 60, { isStatic: true });
 
-        World.add(engine.world, [boxA, boxB, ground]);
+        player = new Player(p, engine);
+        obstacles = [];
+        for (let i = 0; i < 5; i++) {
+            obstacles.push(new Obstacle(p, engine));
+        }
+
+        World.add(engine.world, [ground]);
     };
 
     p.draw = function () {
         Engine.update(engine, p.deltaTime);
 
         p.background(0);
-        p.fill('purple');
 
-        // Draw all bodies
-        // p5 and matter js meeting
-        engine.world.bodies.forEach(body => {
-            p.beginShape()
-            body.vertices.forEach(vertex => {
-                p.vertex(vertex.x, vertex.y);
-            })
-            p.endShape(p.CLOSE);
-        });
+        // Handle updates of game objects
+        player.update();
+        obstacles.forEach(o => o.update());
 
+        // Handle drawing of game objects
+        player.draw();
+        obstacles.forEach(o => o.draw());
 
-        if (p.keyIsDown(p.UP_ARROW)) {
-            Body.applyForce(boxA, boxA.position, { x: 0, y: -0.01 });
-        }
-        if (p.keyIsDown(p.LEFT_ARROW)) {
-            Body.applyForce(boxA, boxA.position, { x: -0.01, y: 0 });
-        }
-        if (p.keyIsDown(p.RIGHT_ARROW)) {
-            Body.applyForce(boxA, boxA.position, { x: +0.01, y: 0 });
-        }
+        // Draw ground
+        p.fill('brown');
+
+        p.beginShape()
+        ground.vertices.forEach(vertex => {
+            p.vertex(vertex.x, vertex.y);
+        })
+        p.endShape(p.CLOSE);
     };
 };
 
