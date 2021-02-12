@@ -2,6 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+global.decomp = require('poly-decomp')
+
 module.exports = {
     mode: 'development',
     entry: './src/index.ts',
