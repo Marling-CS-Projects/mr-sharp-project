@@ -1,5 +1,4 @@
-# y12-game-video
-# y12-demo
+# Mr Sharp Project
 
 # Run Dev Server
 
