@@ -6,10 +6,10 @@ class Obstacle {
     s: p5;
     body: Body;
 
-    constructor(s: p5, engine: Engine) {
+    constructor(s: p5, engine: Engine, position: p5.Vector) {
         this.s = s;
 
-        this.body = Bodies.rectangle(s.random(0, s.width), s.height * 0.8, 50, 50);
+        this.body = Bodies.rectangle(position.x, position.y, 50, 50);
 
         World.add(engine.world, [this.body]);
     }

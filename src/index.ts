@@ -5,6 +5,8 @@ import { Engine, World, Bodies, Body } from 'matter-js';
 import Player from './Player';
 import Obstacle from './Obstacle';
 
+const LEVEL_WIDTH = 10000;
+
 let sketch = function (p: p5) {
     // create an engine
     let engine: Matter.Engine;
@@ -16,12 +18,13 @@ let sketch = function (p: p5) {
         p.createCanvas(700, 410);
 
         engine = Engine.create();
-        ground = Bodies.rectangle(400, 410, 810, 60, { isStatic: true });
+        ground = Bodies.rectangle(400, 410, LEVEL_WIDTH, 60, { isStatic: true });
 
         player = new Player(p, engine);
         obstacles = [];
-        for (let i = 0; i < 5; i++) {
-            obstacles.push(new Obstacle(p, engine));
+        for (let i = 0; i < 50; i++) {
+            let position = p.createVector(p.random(0, LEVEL_WIDTH), p.height * 0.8);
+            obstacles.push(new Obstacle(p, engine, position));
         }
 
         World.add(engine.world, [ground]);
@@ -31,6 +34,9 @@ let sketch = function (p: p5) {
         Engine.update(engine, p.deltaTime);
 
         p.background(0);
+
+        p.push();
+        p.translate(-player.body.position.x + p.width / 2, 0);
 
         // Handle updates of game objects
         player.update();
@@ -48,6 +54,8 @@ let sketch = function (p: p5) {
             p.vertex(vertex.x, vertex.y);
         })
         p.endShape(p.CLOSE);
+
+        p.pop();
     };
 };
 
