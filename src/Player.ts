@@ -1,12 +1,21 @@
 import * as p5 from 'p5';
-import { World, Bodies, Engine, Body } from 'matter-js';
+import { World, Bodies, Engine, Body, Vector } from 'matter-js';
+import GameObject from './GameObject';
 
-class Player {
-    s: p5;
+const MAX_VELOCITY: Vector = {
+    x: 1,
+    y: 5
+}
+
+const clipValue = (value: number, maxAbs: number): number => Math.abs(value) > maxAbs ?
+    maxAbs * value / Math.abs(value) :
+    value;
+
+class Player extends GameObject {
     body: Body;
 
     constructor(s: p5, engine: Engine) {
-        this.s = s;
+        super(s);
         this.body = Bodies.rectangle(s.width / 2, s.height / 2, 20, 20);
 
         World.add(engine.world, [this.body]);
@@ -22,6 +31,12 @@ class Player {
         if (this.s.keyIsDown(this.s.RIGHT_ARROW)) {
             Body.applyForce(this.body, this.body.position, { x: +0.001, y: 0 });
         }
+
+        // Trim the velocity to a maximum value
+        Body.setVelocity(this.body, {
+            x: clipValue(this.body.velocity.x, MAX_VELOCITY.x),
+            y: clipValue(this.body.velocity.y, MAX_VELOCITY.y),
+        });
     }
 
     draw() {

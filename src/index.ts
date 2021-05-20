@@ -4,13 +4,14 @@ import { Engine, World, Bodies, Body } from 'matter-js';
 
 import Player from './Player';
 import Obstacle from './Obstacle';
+import Level from './Level';
 
 let sketch = function (p: p5) {
     // create an engine
     let engine: Matter.Engine;
     var ground: Matter.Body;
     let player: Player;
-    let obstacles: Obstacle[];
+    let level: Level;
 
     p.setup = function () {
         p.createCanvas(700, 410);
@@ -19,10 +20,7 @@ let sketch = function (p: p5) {
         ground = Bodies.rectangle(400, 410, 810, 60, { isStatic: true });
 
         player = new Player(p, engine);
-        obstacles = [];
-        for (let i = 0; i < 5; i++) {
-            obstacles.push(new Obstacle(p, engine));
-        }
+        level = new Level(p, engine);
 
         World.add(engine.world, [ground]);
     };
@@ -34,11 +32,11 @@ let sketch = function (p: p5) {
 
         // Handle updates of game objects
         player.update();
-        obstacles.forEach(o => o.update());
+        level.update();
 
         // Handle drawing of game objects
         player.draw();
-        obstacles.forEach(o => o.draw());
+        level.draw();
 
         // Draw ground
         p.fill('brown');

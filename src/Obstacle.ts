@@ -1,13 +1,13 @@
 import * as p5 from 'p5';
 
 import { Body, Bodies, Engine, World } from 'matter-js';
+import GameObject from './GameObject';
 
-class Obstacle {
-    s: p5;
+class Obstacle extends GameObject {
     body: Body;
 
     constructor(s: p5, engine: Engine) {
-        this.s = s;
+        super(s);
 
         this.body = Bodies.rectangle(s.random(0, s.width), s.height * 0.8, 50, 50);
 
