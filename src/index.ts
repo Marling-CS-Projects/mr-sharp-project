@@ -1,10 +1,11 @@
 import * as p5 from 'p5';
 
-import { Engine, World, Bodies, Body } from 'matter-js';
+import { Engine, World, Bodies } from 'matter-js';
 
 import Player from './Player';
-import Obstacle from './Obstacle';
 import Level from './Level';
+
+const LEVEL_WIDTH = 10000;
 
 let sketch = function (p: p5) {
     // create an engine
@@ -17,7 +18,7 @@ let sketch = function (p: p5) {
         p.createCanvas(700, 410);
 
         engine = Engine.create();
-        ground = Bodies.rectangle(400, 410, 810, 60, { isStatic: true });
+        ground = Bodies.rectangle(400, 410, LEVEL_WIDTH, 60, { isStatic: true });
 
         player = new Player(p, engine);
         level = new Level(p, engine);
@@ -29,6 +30,9 @@ let sketch = function (p: p5) {
         Engine.update(engine, p.deltaTime);
 
         p.background(0);
+
+        p.push();
+        p.translate(-player.body.position.x + p.width / 2, 0);
 
         // Handle updates of game objects
         player.update();
@@ -46,6 +50,8 @@ let sketch = function (p: p5) {
             p.vertex(vertex.x, vertex.y);
         })
         p.endShape(p.CLOSE);
+
+        p.pop();
     };
 };
 

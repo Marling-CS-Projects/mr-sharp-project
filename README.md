@@ -1,5 +1,5 @@
-# y12-game-video
-# y12-demo
+# Mr Sharp Project
+This demonstrates how to integrate p5.js and matter.js and build a game
 
 # Run Dev Server
 
