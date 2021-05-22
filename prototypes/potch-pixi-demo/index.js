@@ -31,7 +31,7 @@ const TILE_BLACK = 12;
 const TILE_BRICK_2 = 13;
 
 // load the texture we need
-PIXI.loader.add('tileset', 'images/rotting-pixels/nature-platformer-tileset-16x16.png').load(function (loader, resources) {
+PIXI.loader.add('tileset', 'images/nature-platformer-tileset-16x16.png').load(function (loader, resources) {
 
     // This creates a texture from a 'bunny.png' image.
     const NATURE_TILESET_COLS = 7;
@@ -58,6 +58,11 @@ PIXI.loader.add('tileset', 'images/rotting-pixels/nature-platformer-tileset-16x1
     // Rotate around the center
     bunny.anchor.x = 0.5;
     bunny.anchor.y = 0.5;
+
+    let background = new PIXI.Container();
+    for (let y=0; y<map.width; y++) {
+        let 
+    }
 
     // Add the bunny to the scene we are building.
     app.stage.addChild(bunny);
