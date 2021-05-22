@@ -1,9 +1,9 @@
 import * as p5 from 'p5';
 
-import { Engine, World, Bodies, Body } from 'matter-js';
+import { Engine, World, Bodies } from 'matter-js';
 
 import Player from './Player';
-import Obstacle from './Obstacle';
+import Level from './Level';
 
 const LEVEL_WIDTH = 10000;
 
@@ -12,7 +12,7 @@ let sketch = function (p: p5) {
     let engine: Matter.Engine;
     var ground: Matter.Body;
     let player: Player;
-    let obstacles: Obstacle[];
+    let level: Level;
 
     p.setup = function () {
         p.createCanvas(700, 410);
@@ -21,11 +21,7 @@ let sketch = function (p: p5) {
         ground = Bodies.rectangle(400, 410, LEVEL_WIDTH, 60, { isStatic: true });
 
         player = new Player(p, engine);
-        obstacles = [];
-        for (let i = 0; i < 50; i++) {
-            let position = p.createVector(p.random(0, LEVEL_WIDTH), p.height * 0.8);
-            obstacles.push(new Obstacle(p, engine, position));
-        }
+        level = new Level(p, engine);
 
         World.add(engine.world, [ground]);
     };
@@ -40,11 +36,11 @@ let sketch = function (p: p5) {
 
         // Handle updates of game objects
         player.update();
-        obstacles.forEach(o => o.update());
+        level.update();
 
         // Handle drawing of game objects
         player.draw();
-        obstacles.forEach(o => o.draw());
+        level.draw();
 
         // Draw ground
         p.fill('brown');
