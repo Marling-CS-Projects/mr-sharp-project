@@ -11,7 +11,8 @@ class Level extends GameObject {
 
         this.platforms = [];
         for (let i = 0; i < 5; i++) {
-            this.platforms.push(new Obstacle(s, engine));
+            let position = s.createVector(i * s.width / 5, s.height / 2);
+            this.platforms.push(new Obstacle(s, engine, position));
         }
 
     }
