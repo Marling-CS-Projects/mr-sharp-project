@@ -1,6 +1,6 @@
 import * as p5 from 'p5';
-import { World, Bodies, Engine, Body, Vector } from 'matter-js';
-import GameObject from './GameObject';
+import { Bodies, Engine, Body, Vector } from 'matter-js';
+import SimpleGameObject from './SimpleGameObject';
 
 const MAX_VELOCITY: Vector = {
     x: 1,
@@ -11,14 +11,11 @@ const clipValue = (value: number, maxAbs: number): number => Math.abs(value) > m
     maxAbs * value / Math.abs(value) :
     value;
 
-class Player extends GameObject {
+class Player extends SimpleGameObject {
     body: Body;
 
     constructor(s: p5, engine: Engine) {
-        super(s);
-        this.body = Bodies.rectangle(s.width / 2, s.height / 2, 20, 20);
-
-        World.add(engine.world, [this.body]);
+        super(s, engine, Bodies.rectangle(s.width / 2, s.height / 2, 20, 20), 'blue');
     }
 
     update() {
@@ -37,16 +34,6 @@ class Player extends GameObject {
             x: clipValue(this.body.velocity.x, MAX_VELOCITY.x),
             y: clipValue(this.body.velocity.y, MAX_VELOCITY.y),
         });
-    }
-
-    draw() {
-        this.s.fill('blue');
-
-        this.s.beginShape()
-        this.body.vertices.forEach(vertex => {
-            this.s.vertex(vertex.x, vertex.y);
-        })
-        this.s.endShape(this.s.CLOSE);
     }
 }
 

@@ -1,6 +1,6 @@
 import * as p5 from 'p5';
 
-import { Engine, World, Bodies } from 'matter-js';
+import { Engine, World, Bodies, Events, IEventCollision } from 'matter-js';
 
 import Player from './Player';
 import Level from './Level';
@@ -24,6 +24,34 @@ let sketch = function (p: p5) {
         level = new Level(p, engine);
 
         World.add(engine.world, [ground]);
+
+        // Setup some collision detection
+        Events.on(engine, 'collisionStart', (event: IEventCollision<Engine>) => {
+            event.pairs
+                .filter(pair => pair.bodyA.id == player.body.id || pair.bodyB.id == player.body.id)
+                .forEach(pair => {
+                    let otherBody = pair.bodyA.id == player.body.id ? pair.bodyB : pair.bodyA;
+                    level.platforms.forEach(platform => {
+                        if (platform.body.id === otherBody.id) {
+                            platform.onContactWithPlayerStarts();
+                        }
+                    })
+                })
+        })
+
+        // Setup some collision detection
+        Events.on(engine, 'collisionEnd', (event: IEventCollision<Engine>) => {
+            event.pairs
+                .filter(pair => pair.bodyA.id == player.body.id || pair.bodyB.id == player.body.id)
+                .forEach(pair => {
+                    let otherBody = pair.bodyA.id == player.body.id ? pair.bodyB : pair.bodyA;
+                    level.platforms.forEach(platform => {
+                        if (platform.body.id === otherBody.id) {
+                            platform.onContactWithPlayerEnds();
+                        }
+                    })
+                })
+        })
     };
 
     p.draw = function () {
