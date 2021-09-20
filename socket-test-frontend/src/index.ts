@@ -1,3 +1,5 @@
+import { io } from 'socket.io-client';
+
 function component() {
     const element = document.createElement('div');
 
@@ -8,3 +10,6 @@ function component() {
 }
 
 document.body.appendChild(component());
+
+var socket = io();
+console.log('FOO')
