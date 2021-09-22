@@ -1,17 +1,18 @@
 console.log('Hello World')
 
-const outputHeading = document.getElementById('outputHeading');
-const submitButton = document.getElementById('cmdSetAge');
+const outputHeading = document.getElementById('result');
+const submitButton = document.getElementById('cmdMultiply');
 
-function foo(e) {
+function multiply(e) {
     // Prevent the form from actually submitting
     e.preventDefault();
 
-    const name = document.forms['user']['name'].value;
-    const age = document.forms['user']['age'].value;
+    const number1 = document.forms['maths']['number1'].value;
+    const number2 = document.forms['maths']['number2'].value;
+    const multiplied = number1 * number2;
 
-    outputHeading.innerHTML = "Your name is " + name + ", you are " + age + " years old";
+    outputHeading.innerHTML = number1 + " x " + number2 + " = " + multiplied;
 }
 
-submitButton.addEventListener('click', foo);
+submitButton.addEventListener('click', multiply);
 
