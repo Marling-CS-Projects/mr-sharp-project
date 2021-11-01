@@ -1,73 +1,86 @@
 import kaboom from 'kaboom';
+import { Engine } from 'matter-js';
 
-const { addKaboom, origin } = kaboom();
+import rocketCarControlsProducer from './components/rocketCarControls';
+import scoreProducer, { ScoreContainer } from './components/score';
+import { matterRectBodyProducer, matterCircleBodyProducer } from './components/matterBody';
 
-// keep track of score
-let score = 0;
+// Create our Kaboom context
+const k = kaboom({
+
+});
+
+// Create our Matter JS engine
+let engine = Engine.create();
+
+// Create our component producers, with reference to this single context
+const score = scoreProducer(k);
+const rocketCarControls = rocketCarControlsProducer(k);
+const matterRectBody = matterRectBodyProducer(k, engine);
+const matterCircleBody = matterCircleBodyProducer(k, engine);
+
+// Pull what we require from the Kaboom context in this source file.
+const {
+    scene,
+    pos,
+    add,
+    keyPress,
+    text,
+    origin,
+    outline,
+    dt
+} = k;
+
+// The player score is tracked outside of any specific scene
+let playerScore = new ScoreContainer();
 
 scene("game", () => {
-    // load a default sprite
-    loadBean();
+    playerScore.reset();
 
     // add character to screen, from a list of components
-    const player = add([
-        // sprite("bean"),  // renders as a sprite
-        rect(48, 48),
-        color(255, 0, 0),
-        pos(120, 80),    // position in world
-        area(),          // has a collider
-        body(),          // responds to physics and gravity
+    add([
+        rect(64, 48),
+        color(180, 20, 0),
+        rotate(0),
+        pos(120, 80),
+        origin('center'),
+        matterRectBody(),
+        outline(4),
+        rocketCarControls()
     ]);
 
-    // jump when player presses "space" key
-    keyPress("space", () => {
-        // .jump() is provided by the body() component
-        if (player.grounded()) {
-            player.jump();
-        }
-    });
+    // Show the score
+    add([score(playerScore)])
 
     // add platform
     add([
-        rect(width(), 48),
-        pos(0, height() - 48),
+        circle(48),
+        color(50, 20, 200),
+        rotate(0),
+        origin('center'),
+        pos(80, height() / 2),
         outline(4),
-        area(),
-        solid(),
-        color(127, 200, 255),
-    ])
+        matterCircleBody({
+            isStatic: true
+        })
+    ]);
 
-    // add tree
-    loop(1, () => {
-        // add tree
-        add([
-            rect(48, rand(24, 64)),
-            area(),
-            outline(4),
-            pos(width(), height() - 48),
-            origin("botleft"),
-            color(255, 180, 255),
-            move(LEFT, 240),
-            "tree", // add a tag here
-        ]);
-    });
-
-    player.collides("tree", () => {
-        addKaboom(player.pos);
-        shake(4);
-        go("lose");
-    });
-
-
-    const scoreLabel = add([
-        text(score.toString(10)),
-        pos(24, 24),
+    add([
+        rect(width(), 48),
+        color(50, 20, 200),
+        rotate(0),
+        origin('center'),
+        pos(width() / 2, height() - 48),
+        outline(4),
+        matterRectBody({
+            isStatic: true
+        })
     ]);
 
     // increment score every frame
     action(() => {
-        score++;
-        scoreLabel.text = score.toString(10);
+        playerScore.incrementScore();
+        Engine.update(engine, 1000 * dt());
     });
 })
 
@@ -78,13 +91,8 @@ scene("lose", () => {
         origin("center"),
     ]);
 
-    // display score
-    add([
-        text(score.toString(10)),
-        pos(width() / 2, height() / 2 + 80),
-        scale(2),
-        origin("center"),
-    ]);
+    // Show the score
+    add([score(playerScore)])
 
     // go back to game with space is pressed
     keyPress("space", () => go("game"));

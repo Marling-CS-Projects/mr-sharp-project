@@ -20,6 +20,8 @@
     "webpack-dev-server": "^4.4.0"
   },
   "dependencies": {
-    "kaboom": "^2000.0.0"
+    "@types/matter-js": "^0.17.6",
+    "kaboom": "^2000.0.0",
+    "matter-js": "^0.17.1"
   }
 }
